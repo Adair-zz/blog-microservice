@@ -11,6 +11,7 @@
         <module>user-service</module>
         <module>blog-api</module>
         <module>blog-gateway</module>
+        <module>interview-service</module>
     </modules>
     <name>blog-microservice</name>
     <description>Blog Service</description>
