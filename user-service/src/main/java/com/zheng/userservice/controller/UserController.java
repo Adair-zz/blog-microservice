@@ -28,7 +28,7 @@ import java.util.List;
  * @Created 04/22/2023 - 19:15
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/")
 public class UserController {
   
   @Resource

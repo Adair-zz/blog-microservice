@@ -13,6 +13,16 @@ import java.io.Serializable;
 public class InterviewQuestionAddRequest implements Serializable {
   
   /**
+   * language
+   */
+  private String language;
+  
+  /**
+   * topic group
+   */
+  private String topic;
+  
+  /**
    * interview question
    */
   private String question;
@@ -21,11 +31,6 @@ public class InterviewQuestionAddRequest implements Serializable {
    * interview answer
    */
   private String answer;
-  
-  /**
-   * topic group
-   */
-  private String topic;
   
   private static final long serialVersionUID = 1L;
 }

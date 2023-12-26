@@ -23,7 +23,7 @@ import java.util.List;
  * @Created 12/24/2023 - 18:40
  */
 @RestController
-@RequestMapping("/interview")
+@RequestMapping("/")
 public class InterviewController {
   
   @Resource
@@ -34,10 +34,12 @@ public class InterviewController {
     if (interviewQuestionAddRequest == null) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
+    
+    String language = interviewQuestionAddRequest.getLanguage();
     String topic = interviewQuestionAddRequest.getTopic();
     String question = interviewQuestionAddRequest.getQuestion();
     String answer = interviewQuestionAddRequest.getAnswer();
-    if (StringUtils.isAnyBlank(topic, question, answer)) {
+    if (StringUtils.isAnyBlank(language, topic, question, answer)) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
   

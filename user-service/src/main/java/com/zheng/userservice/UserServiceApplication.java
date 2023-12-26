@@ -1,6 +1,6 @@
 package com.zheng.userservice;
 
-import com.zheng.blogapi.client.UserClient;
+import com.zheng.blogapi.client.UserFeignClient;
 import com.zheng.blogapi.config.DefaultFeignConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @Description
  * @Created 12/18/2023 - 15:14
  */
-@EnableFeignClients(clients = {UserClient.class}, defaultConfiguration = DefaultFeignConfig.class)
+@EnableFeignClients(clients = {UserFeignClient.class}, defaultConfiguration = DefaultFeignConfig.class)
 @SpringBootApplication
 @MapperScan("com.zheng.userservice.mapper")
 @ComponentScan("com.zheng")
