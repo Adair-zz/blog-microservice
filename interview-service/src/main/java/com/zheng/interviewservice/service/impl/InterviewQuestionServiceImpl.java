@@ -4,13 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zheng.blogcommon.model.dto.interview.InterviewQuestionQueryRequest;
 import com.zheng.blogcommon.model.entity.InterviewQuestion;
+import com.zheng.blogcommon.model.vo.interview.InterviewQuestionVO;
 import com.zheng.interviewservice.service.InterviewQuestionService;
 import com.zheng.interviewservice.mapper.InterviewQuestionMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author 张峥
@@ -22,7 +25,7 @@ public class InterviewQuestionServiceImpl extends ServiceImpl<InterviewQuestionM
     implements InterviewQuestionService{
   
   @Override
-  public List<InterviewQuestion> getByQueryRequest(InterviewQuestionQueryRequest interviewQuestionQueryRequest, Long userId) {
+  public List<InterviewQuestionVO> getByQueryRequest(InterviewQuestionQueryRequest interviewQuestionQueryRequest, Long userId) {
     if (interviewQuestionQueryRequest == null) {
       return new ArrayList<>();
     }
@@ -38,8 +41,13 @@ public class InterviewQuestionServiceImpl extends ServiceImpl<InterviewQuestionM
     queryWrapper.like(StringUtils.isNotBlank(question), "question", question);
     queryWrapper.like(StringUtils.isNotBlank(answer), "answer", answer);
     queryWrapper.eq("userId", userId);
-    List<InterviewQuestion> interviewQuestionList = this.list(queryWrapper);
-    return interviewQuestionList;
+    
+    List<InterviewQuestionVO> interviewQuestionVOList = this.list(queryWrapper).stream().map(interviewQuestion -> {
+      InterviewQuestionVO interviewQuestionVO = new InterviewQuestionVO();
+      BeanUtils.copyProperties(interviewQuestion, interviewQuestionVO);
+      return interviewQuestionVO;
+    }).collect(Collectors.toList());
+    return interviewQuestionVOList;
   }
 }
 

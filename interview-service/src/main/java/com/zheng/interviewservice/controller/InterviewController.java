@@ -11,6 +11,7 @@ import com.zheng.blogcommon.model.dto.interview.InterviewQuestionAddRequest;
 import com.zheng.blogcommon.model.dto.interview.InterviewQuestionQueryRequest;
 import com.zheng.blogcommon.model.entity.InterviewQuestion;
 import com.zheng.blogcommon.model.entity.User;
+import com.zheng.blogcommon.model.vo.interview.InterviewQuestionVO;
 import com.zheng.interviewservice.service.InterviewQuestionService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,7 +75,7 @@ public class InterviewController {
    * @return
    */
   @GetMapping("/my/list/topic")
-  public BaseResponse<List<InterviewQuestion>> getInterviewQuestionsByTopic(
+  public BaseResponse<List<InterviewQuestionVO>> getInterviewQuestionsByTopic(
       @RequestBody InterviewQuestionQueryRequest interviewQuestionQueryRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
     
@@ -82,7 +83,7 @@ public class InterviewController {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
     
-    List<InterviewQuestion> interviewQuestionsByTopic = interviewQuestionService.getByQueryRequest(interviewQuestionQueryRequest, loginUser.getId());
+    List<InterviewQuestionVO> interviewQuestionsByTopic = interviewQuestionService.getByQueryRequest(interviewQuestionQueryRequest, loginUser.getId());
     if (interviewQuestionsByTopic == null || interviewQuestionsByTopic.size() <= 0) {
       throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
     }

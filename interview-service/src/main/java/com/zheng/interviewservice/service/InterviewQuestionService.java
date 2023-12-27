@@ -3,6 +3,7 @@ package com.zheng.interviewservice.service;
 import com.zheng.blogcommon.model.dto.interview.InterviewQuestionQueryRequest;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zheng.blogcommon.model.entity.InterviewQuestion;
+import com.zheng.blogcommon.model.vo.interview.InterviewQuestionVO;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ import java.util.List;
 */
 public interface InterviewQuestionService extends IService<InterviewQuestion> {
 
-  List<InterviewQuestion> getByQueryRequest(InterviewQuestionQueryRequest interviewQuestionQueryRequest, Long userId);
+  List<InterviewQuestionVO> getByQueryRequest(InterviewQuestionQueryRequest interviewQuestionQueryRequest, Long userId);
 }
