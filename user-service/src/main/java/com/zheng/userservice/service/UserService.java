@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zheng.blogcommon.model.dto.user.UserQueryRequest;
 import com.zheng.blogcommon.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zheng.blogcommon.model.vo.LoginUserVO;
-import com.zheng.blogcommon.model.vo.UserVO;
+import com.zheng.blogcommon.model.vo.user.LoginUserVO;
+import com.zheng.blogcommon.model.vo.user.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;

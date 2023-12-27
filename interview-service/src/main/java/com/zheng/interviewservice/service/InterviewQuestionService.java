@@ -1,8 +1,8 @@
 package com.zheng.interviewservice.service;
 
 import com.zheng.blogcommon.model.dto.interview.InterviewQuestionQueryRequest;
-import com.zheng.blogcommon.model.entity.InterviewQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zheng.blogcommon.model.entity.InterviewQuestion;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.zheng.interviewservice.mapper;
 
-import com.zheng.blogcommon.model.entity.InterviewQuestion;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zheng.blogcommon.model.entity.InterviewQuestion;
 
 /**
 * @author 张峥

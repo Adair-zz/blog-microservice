@@ -2,8 +2,6 @@ package com.zheng.interviewservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zheng.blogcommon.common.ErrorCode;
-import com.zheng.blogcommon.exception.BusinessException;
 import com.zheng.blogcommon.model.dto.interview.InterviewQuestionQueryRequest;
 import com.zheng.blogcommon.model.entity.InterviewQuestion;
 import com.zheng.interviewservice.service.InterviewQuestionService;

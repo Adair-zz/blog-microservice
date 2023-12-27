@@ -5,7 +5,7 @@ import com.zheng.blogcommon.constant.UserConstant;
 import com.zheng.blogcommon.exception.BusinessException;
 import com.zheng.blogcommon.model.entity.User;
 import com.zheng.blogcommon.model.enums.UserRoleEnum;
-import com.zheng.blogcommon.model.vo.UserVO;
+import com.zheng.blogcommon.model.vo.user.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.openfeign.FeignClient;
