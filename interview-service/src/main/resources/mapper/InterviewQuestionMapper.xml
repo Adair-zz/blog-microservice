@@ -10,13 +10,14 @@
             <result property="topic" column="topic" jdbcType="VARCHAR"/>
             <result property="question" column="question" jdbcType="VARCHAR"/>
             <result property="answer" column="answer" jdbcType="VARCHAR"/>
+            <result property="userId" column="userId" jdbcType="BIGINT" />
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,question,answer,language,
+        id,question,answer,language,userId,
         topic,createTime,updateTime,
         isDelete
     </sql>

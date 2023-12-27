@@ -13,9 +13,24 @@ import java.io.Serializable;
 public class InterviewQuestionQueryRequest implements Serializable {
   
   /**
+   * language
+   */
+  private String language;
+  
+  /**
    * topic group
    */
   private String topic;
+  
+  /**
+   * interview question
+   */
+  private String question;
+  
+  /**
+   * interview answer
+   */
+  private String answer;
   
   private static final long serialVersionUID = 1L;
 }

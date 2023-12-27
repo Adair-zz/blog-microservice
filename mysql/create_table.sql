@@ -23,7 +23,10 @@ create table if not exists interview_question (
     `topic` varchar(256) not null comment 'topic group',
     `question` varchar(1024) not null comment 'interview question',
     `answer` text not null comment 'interview answer',
+    `userId` bigint not null comment 'user id',
     `createTime` datetime default CURRENT_TIMESTAMP not null comment 'creation time',
     `updateTime` datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
-    `isDelete` tinyint default 0 not null comment 'is delete'
+    `isDelete` tinyint default 0 not null comment 'is delete',
+    index idx_userId(userId)
 ) comment 'interview question';
+

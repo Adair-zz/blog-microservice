@@ -17,4 +17,10 @@ spring:
           uri: lb://interview-service
           predicates:
             - Path=/api/interview/**
-
+knife4j:
+  gateway:
+    enabled: true
+    strategy: discover
+    discover:
+      enabled: true
+      version: openapi3
