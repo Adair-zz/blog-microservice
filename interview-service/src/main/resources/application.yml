@@ -30,7 +30,7 @@ server:
   address: 0.0.0.0
   port: 8082
   servlet:
-    context-path: /api/interview
+    context-path: /api
     session:
       cookie:
         max-age: 2592000

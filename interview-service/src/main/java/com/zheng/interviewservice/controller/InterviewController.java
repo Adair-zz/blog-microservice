@@ -27,7 +27,7 @@ import java.util.List;
  * @Created 12/24/2023 - 18:40
  */
 @RestController
-@RequestMapping("/")
+@RequestMapping("/interview")
 public class InterviewController {
   
   @Resource
@@ -74,8 +74,8 @@ public class InterviewController {
    * @param httpServletRequest
    * @return
    */
-  @GetMapping("/my/list/topic")
-  public BaseResponse<List<InterviewQuestionVO>> getInterviewQuestionsByTopic(
+  @PostMapping("/my/list/topic")
+  public BaseResponse<List<InterviewQuestionVO>> getInterviewQuestionsByQuery(
       @RequestBody InterviewQuestionQueryRequest interviewQuestionQueryRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
     
@@ -96,7 +96,7 @@ public class InterviewController {
    * @param deleteRequest
    * @return
    */
-  @GetMapping("/delete")
+  @PostMapping("/delete")
   public BaseResponse<Boolean> deleteInterviewQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
     

@@ -36,8 +36,8 @@ public class InterviewQuestionServiceImpl extends ServiceImpl<InterviewQuestionM
     String answer = interviewQuestionQueryRequest.getAnswer();
   
     QueryWrapper<InterviewQuestion> queryWrapper = new QueryWrapper<>();
-    queryWrapper.like(StringUtils.isNotBlank(language), "language", language);
-    queryWrapper.like(StringUtils.isNotBlank(topic), "topic", topic);
+    queryWrapper.eq(StringUtils.isNotBlank(language), "language", language);
+    queryWrapper.eq(StringUtils.isNotBlank(topic), "topic", topic);
     queryWrapper.like(StringUtils.isNotBlank(question), "question", question);
     queryWrapper.like(StringUtils.isNotBlank(answer), "answer", answer);
     queryWrapper.eq("userId", userId);
