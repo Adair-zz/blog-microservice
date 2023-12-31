@@ -15,6 +15,11 @@ import java.util.Date;
 public class InterviewQuestionVO implements Serializable {
   
   /**
+   * id
+   */
+  private Long id;
+  
+  /**
    * language
    */
   private String language;

@@ -30,3 +30,32 @@ create table if not exists interview_question (
     index idx_userId(userId)
 ) comment 'interview question';
 
+create table if not exists question (
+    `id` bigint auto_increment comment 'id' primary key,
+    `title` varchar(512) not null comment 'title',
+    `content` text not null comment 'content',
+    `tags` varchar(1024) null comment 'tag list (json)',
+    `answer` text not null comment 'question answer',
+    `judgeCase` text not null comment 'judge case (json)',
+    `userId` bigint not null comment 'user id',
+    `createTime` datetime default CURRENT_TIMESTAMP not null comment 'creation time',
+    `updateTime` datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
+    `idDelete` tinyint default 0 not null comment 'is delete',
+    index idx_userId (userId)
+) comment 'question';
+
+create table if not exists submitted_question (
+    `id` bigint auto_increment comment 'id' primary key,
+    `language` varchar(128) not null comment 'programming language',
+    `code` text not null comment 'user code',
+    `judgeInfo` text null comment 'judge info',
+    `status` tinyint default 0 not null comment 'result status: 0-wait, 1-in progress, 2-success, 3-failure',
+    `questionId` bigint not null comment 'question id',
+    `userId` bigint not null comment 'user id',
+    `createTime` datetime default CURRENT_TIMESTAMP not null comment 'creation time',
+    `updateTime` datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
+    `idDelete` tinyint default 0 not null comment 'is delete',
+    index idx_questionId (questionId),
+    index idx_userId (userId)
+) comment 'submitted question';
+

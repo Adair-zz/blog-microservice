@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: question-service
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog
+    username: root
+    password: zz2843517195
+  # session expiration time(minutes): two months
+  session:
+    timeout: 2592000
+    redis:
+      repository-type: default
+  # redis config
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      database: 0
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    openfeign:
+      okhttp:
+        enabled: true
+server:
+  address: 0.0.0.0
+  port: 8083
+  servlet:
+    context-path: /api
+    session:
+      cookie:
+        max-age: 2592000
+        path: /api
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+  global-config:
+    db-config:
+      logic-delete-field: isDelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+springdoc:
+  swagger-ui:
+    path: /docs-home.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.zheng.userservice.controller
+knife4j:
+  enable: true
+  setting:
+    language: en
+logging:
+  level:
+    com.zheng: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+  file:
+    path: "logs/${spring.application.name}"

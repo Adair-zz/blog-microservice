@@ -9,6 +9,7 @@ import com.zheng.blogcommon.exception.BusinessException;
 import com.zheng.blogcommon.exception.ThrowUtils;
 import com.zheng.blogcommon.model.dto.interview.InterviewQuestionAddRequest;
 import com.zheng.blogcommon.model.dto.interview.InterviewQuestionQueryRequest;
+import com.zheng.blogcommon.model.dto.interview.InterviewQuestionUpdateRequest;
 import com.zheng.blogcommon.model.entity.InterviewQuestion;
 import com.zheng.blogcommon.model.entity.User;
 import com.zheng.blogcommon.model.vo.interview.InterviewQuestionVO;
@@ -88,6 +89,21 @@ public class InterviewController {
       throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
     }
     return ResultUtils.success(interviewQuestionsByTopic);
+  }
+  
+  @PostMapping("/update")
+  public BaseResponse<Boolean> updateInterviewQuestion(@RequestBody InterviewQuestionUpdateRequest interviewQuestionUpdateRequest, HttpServletRequest httpServletRequest) {
+    if (interviewQuestionUpdateRequest == null || interviewQuestionUpdateRequest.getId() <= 0) {
+      throw new BusinessException(ErrorCode.PARAMS_ERROR);
+    }
+    InterviewQuestion interviewQuestion = new InterviewQuestion();
+    BeanUtils.copyProperties(interviewQuestionUpdateRequest, interviewQuestion);
+    // check if the question exists
+    long id = interviewQuestionUpdateRequest.getId();
+    InterviewQuestion oldInterviewQuestion = interviewQuestionService.getById(id);
+    ThrowUtils.throwIf(oldInterviewQuestion == null, ErrorCode.NOT_FOUND_ERROR);
+    Boolean isUpdate = interviewQuestionService.updateById(interviewQuestion);
+    return ResultUtils.success(isUpdate);
   }
   
   /**

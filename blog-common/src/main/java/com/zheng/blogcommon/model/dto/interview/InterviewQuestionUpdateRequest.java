@@ -7,15 +7,15 @@ import java.io.Serializable;
 /**
  * @Author: Zheng Zhang
  * @Description
- * @Created 12/24/2023 - 22:53
+ * @Created 12/30/2023 - 23:33
  */
 @Data
-public class InterviewQuestionQueryRequest implements Serializable {
+public class InterviewQuestionUpdateRequest implements Serializable {
   
   /**
    * id
    */
-  public Long id;
+  private Long id;
   
   /**
    * language
