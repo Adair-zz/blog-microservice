@@ -93,6 +93,8 @@ public class InterviewController {
   
   @PostMapping("/update")
   public BaseResponse<Boolean> updateInterviewQuestion(@RequestBody InterviewQuestionUpdateRequest interviewQuestionUpdateRequest, HttpServletRequest httpServletRequest) {
+    User loginUser = userFeignClient.getLoginUser(httpServletRequest);
+    
     if (interviewQuestionUpdateRequest == null || interviewQuestionUpdateRequest.getId() <= 0) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
@@ -101,6 +103,10 @@ public class InterviewController {
     // check if the question exists
     long id = interviewQuestionUpdateRequest.getId();
     InterviewQuestion oldInterviewQuestion = interviewQuestionService.getById(id);
+    // only allow for users themselves or admin
+    if (!oldInterviewQuestion.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)) {
+      throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+    }
     ThrowUtils.throwIf(oldInterviewQuestion == null, ErrorCode.NOT_FOUND_ERROR);
     Boolean isUpdate = interviewQuestionService.updateById(interviewQuestion);
     return ResultUtils.success(isUpdate);
@@ -113,7 +119,7 @@ public class InterviewController {
    * @return
    */
   @PostMapping("/delete")
-  public BaseResponse<Boolean> deleteInterviewQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest httpServletRequest) {
+  public BaseResponse<Boolean> deleteInterviewQuestionById(@RequestBody DeleteRequest deleteRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
     
     if (deleteRequest == null || deleteRequest.getId() <= 0) {

@@ -53,7 +53,7 @@ springdoc:
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
-      packages-to-scan: com.zheng.userservice.controller
+      packages-to-scan: com.zheng.questionservice.controller
 knife4j:
   enable: true
   setting:

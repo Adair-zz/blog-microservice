@@ -17,6 +17,10 @@ spring:
           uri: lb://interview-service
           predicates:
             - Path=/api/interview/**
+        - id: question-service
+          uri: lb://question-service
+          predicates:
+            - Path=/api/question/**
 knife4j:
   gateway:
     enabled: true
