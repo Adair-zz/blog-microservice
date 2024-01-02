@@ -1,4 +1,4 @@
-package com.zheng.userservice.config;
+package com.zheng.blogcommon.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @Created 08/25/2023 - 19:25
  */
 @Configuration
-@MapperScan("com.zheng.usercenter.mapper")
+@MapperScan({"com.zheng.usercenter.mapper", "com.zheng.questionservice.mapper", "com.zheng.interviewservice.mapper"})
 public class MyBatisPlusConfig {
   
   @Bean
