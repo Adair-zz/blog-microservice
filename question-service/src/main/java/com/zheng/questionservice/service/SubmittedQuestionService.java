@@ -1,7 +1,9 @@
 package com.zheng.questionservice.service;
 
+import com.zheng.blogcommon.model.dto.questionsubmit.SubmittedQuestionAddRequest;
 import com.zheng.blogcommon.model.entity.SubmittedQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zheng.blogcommon.model.entity.User;
 
 /**
 * @author 张峥
@@ -10,4 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SubmittedQuestionService extends IService<SubmittedQuestion> {
 
+  long doQuestionSubmit(SubmittedQuestionAddRequest submittedQuestionAddRequest, User loginUser);
 }

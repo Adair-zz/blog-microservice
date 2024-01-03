@@ -1,6 +1,5 @@
 package com.zheng.questionservice.controller;
 
-import com.alibaba.nacos.api.naming.pojo.healthcheck.impl.Http;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.zheng.blogapi.client.UserFeignClient;
@@ -10,12 +9,11 @@ import com.zheng.blogcommon.common.ErrorCode;
 import com.zheng.blogcommon.common.ResultUtils;
 import com.zheng.blogcommon.exception.BusinessException;
 import com.zheng.blogcommon.exception.ThrowUtils;
-import com.zheng.blogcommon.model.dto.interview.InterviewQuestionUpdateRequest;
 import com.zheng.blogcommon.model.dto.question.JudgeCase;
 import com.zheng.blogcommon.model.dto.question.QuestionAddRequest;
 import com.zheng.blogcommon.model.dto.question.QuestionQueryRequest;
 import com.zheng.blogcommon.model.dto.question.QuestionUpdateRequest;
-import com.zheng.blogcommon.model.entity.InterviewQuestion;
+import com.zheng.blogcommon.model.dto.questionsubmit.SubmittedQuestionAddRequest;
 import com.zheng.blogcommon.model.entity.Question;
 import com.zheng.blogcommon.model.entity.User;
 import com.zheng.blogcommon.model.vo.question.QuestionVO;
@@ -26,10 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -151,6 +146,13 @@ public class QuestionController {
     return ResultUtils.success(isUpdate);
   }
   
+  /**
+   * get my question list by page.
+   *
+   * @param questionQueryRequest
+   * @param httpServletRequest
+   * @return
+   */
   @PostMapping("/my/list/page/vo")
   public BaseResponse<Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
@@ -165,6 +167,41 @@ public class QuestionController {
     ThrowUtils.throwIf(size > 30, ErrorCode.PARAMS_ERROR);
     Page<Question> questionPage = questionService.page(new Page<>(currentPage, size), questionService.getQueryWrapper(questionQueryRequest));
     return ResultUtils.success(questionService.getQuestionVOPage(questionPage, httpServletRequest));
+  }
+  
+  /**
+   * get question vo by id.
+   *
+   * @param id
+   * @param httpServletRequest
+   * @return
+   */
+  @GetMapping("/get/vo")
+  public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpServletRequest httpServletRequest) {
+    User loginUser = userFeignClient.getLoginUser(httpServletRequest);
+  
+    if (id <= 0) {
+      throw new BusinessException(ErrorCode.PARAMS_ERROR);
+    }
+    Question question = questionService.getById(id);
+    if (!question.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)) {
+      throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+    }
+    QuestionVO questionVO = new QuestionVO();
+    BeanUtils.copyProperties(question, questionVO);
+    return ResultUtils.success(questionVO);
+  }
+  
+  @PostMapping("/question_submit/do")
+  public BaseResponse<Long> doQuestionSubmit(@RequestBody SubmittedQuestionAddRequest submittedQuestionAddRequest, HttpServletRequest httpServletRequest) {
+    User loginUser = userFeignClient.getLoginUser(httpServletRequest);
+  
+    if (submittedQuestionAddRequest == null || submittedQuestionAddRequest.getQuestionId() <= 0) {
+      throw new BusinessException(ErrorCode.PARAMS_ERROR);
+    }
+    
+    long submittedQuestionId = submittedQuestionService.doQuestionSubmit(submittedQuestionAddRequest, loginUser);
+    return ResultUtils.success(submittedQuestionId);
   }
   
 }
