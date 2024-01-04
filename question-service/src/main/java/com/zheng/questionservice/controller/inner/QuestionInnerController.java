@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j
 @RestController
-@RequestMapping("/inner")
+@RequestMapping("/question/inner")
 public class QuestionInnerController implements QuestionFeignClient {
   
   @Resource

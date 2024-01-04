@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @Description
  * @Created 01/03/2024 - 23:19
  */
-@FeignClient(value = "code-service", path = "api/code/inner")
+@FeignClient(value = "code-service", path = "/api/code/inner")
 public interface CodeFeignClient {
   
   /**
