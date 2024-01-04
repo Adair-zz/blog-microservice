@@ -13,6 +13,7 @@
         <module>blog-gateway</module>
         <module>interview-service</module>
         <module>question-service</module>
+        <module>code-service</module>
     </modules>
     <name>blog-microservice</name>
     <description>Blog Service</description>

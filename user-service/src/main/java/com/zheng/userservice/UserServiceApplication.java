@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @Description
  * @Created 12/18/2023 - 15:14
  */
-@EnableFeignClients(clients = {UserFeignClient.class}, defaultConfiguration = DefaultFeignConfig.class)
+@EnableFeignClients(basePackages = {"com.zheng.blogapi.client"}, defaultConfiguration = DefaultFeignConfig.class)
 @SpringBootApplication
 @MapperScan("com.zheng.userservice.mapper")
 @ComponentScan("com.zheng")

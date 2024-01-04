@@ -192,6 +192,13 @@ public class QuestionController {
     return ResultUtils.success(questionVO);
   }
   
+  /**
+   * submit question to execute the code.
+   *
+   * @param submittedQuestionAddRequest
+   * @param httpServletRequest
+   * @return
+   */
   @PostMapping("/question_submit/do")
   public BaseResponse<Long> doQuestionSubmit(@RequestBody SubmittedQuestionAddRequest submittedQuestionAddRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
