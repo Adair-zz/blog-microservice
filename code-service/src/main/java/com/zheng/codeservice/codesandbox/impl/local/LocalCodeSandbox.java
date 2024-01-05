@@ -1,4 +1,4 @@
-package com.zheng.codeservice.codesandbox.impl;
+package com.zheng.codeservice.codesandbox.impl.local;
 
 import com.zheng.blogcommon.model.codesandbox.CodeExecutionRequest;
 import com.zheng.blogcommon.model.codesandbox.CodeExecutionResponse;
@@ -11,10 +11,10 @@ import lombok.extern.slf4j.Slf4j;
  * @Created 01/03/2024 - 15:28
  */
 @Slf4j
-public class LocalCodeSandbox implements CodeSandbox {
+public class LocalCodeSandbox extends LocalCodeSandboxTemplate {
+
   @Override
   public CodeExecutionResponse executeCode(CodeExecutionRequest codeExecutionRequest) {
-    log.info("Local Code Sandbox");
-    return null;
+    return super.executeCode(codeExecutionRequest);
   }
 }

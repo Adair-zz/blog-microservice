@@ -1,6 +1,6 @@
 package com.zheng.codeservice.codesandbox;
 
-import com.zheng.codeservice.codesandbox.impl.LocalCodeSandbox;
+import com.zheng.codeservice.codesandbox.impl.local.LocalCodeSandbox;
 import com.zheng.codeservice.codesandbox.impl.TestCodeSandbox;
 
 /**
