@@ -13,6 +13,7 @@ import com.zheng.blogcommon.model.entity.SubmittedQuestion;
 import com.zheng.blogcommon.model.enums.SubmittedQuestionStatusEnum;
 import com.zheng.codeservice.codesandbox.CodeSandbox;
 import com.zheng.codeservice.codesandbox.CodeSandboxFactory;
+import com.zheng.codeservice.codesandbox.CodeSandboxProxy;
 import com.zheng.codeservice.manager.JudgeManager;
 import com.zheng.codeservice.service.ExecutionService;
 import com.zheng.codeservice.strategy.ExecutionContext;
@@ -72,6 +73,7 @@ public class ExecutionServiceImpl implements ExecutionService {
     
     // call code sandbox
     CodeSandbox codeSandbox = CodeSandboxFactory.newInstance(type);
+    codeSandbox = new CodeSandboxProxy(codeSandbox);
     String language = submittedQuestion.getLanguage();
     String code = submittedQuestion.getCode();
     String judgeCaseStr = question.getJudgeCase();
