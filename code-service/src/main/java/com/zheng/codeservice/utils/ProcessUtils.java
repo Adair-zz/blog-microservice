@@ -1,6 +1,6 @@
 package com.zheng.codeservice.utils;
 
-import com.zheng.blogcommon.model.codesandbox.ExecutionMessage;
+import com.zheng.blogcommon.model.codesandbox.ExecutionResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.StopWatch;
@@ -18,15 +18,15 @@ import java.util.List;
 @Slf4j
 public class ProcessUtils {
   
-  public static ExecutionMessage runProcess(Process process) {
-    ExecutionMessage executionMessage = new ExecutionMessage();
+  public static ExecutionResult runProcess(Process process) {
+    ExecutionResult executionResult = new ExecutionResult();
     
     try {
       StopWatch stopWatch = new StopWatch();
       stopWatch.start();
       
       int exitValue = process.waitFor();
-      executionMessage.setExitValue(exitValue);
+      executionResult.setExitValue(exitValue);
   
       List<String> outputList = new ArrayList<>();
       if (exitValue == 0) {
@@ -37,7 +37,7 @@ public class ProcessUtils {
         while ((compileOutputLine = bufferedReader.readLine()) != null) {
           outputList.add(compileOutputLine);
         }
-        executionMessage.setMessage(StringUtils.join(outputList) + "\n");
+        executionResult.setOutputList(outputList);
       } else {
         log.info("Fail to compile user code");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -45,7 +45,7 @@ public class ProcessUtils {
         while ((compileOutputLine = bufferedReader.readLine()) != null) {
           outputList.add(compileOutputLine);
         }
-        executionMessage.setMessage(StringUtils.join(outputList, "\n"));
+        executionResult.setOutputList(outputList);
         
         // error stream
         BufferedReader errorBufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -54,14 +54,16 @@ public class ProcessUtils {
         while ((errorCompileOutputLine = errorBufferedReader.readLine()) != null) {
           errorOutputStrList.add(errorCompileOutputLine);
         }
-        executionMessage.setErrorMessage(StringUtils.join(errorOutputStrList, "\n"));
+        executionResult.setErrorMessage(StringUtils.join(errorOutputStrList, "\n"));
       }
       
       stopWatch.stop();
-      executionMessage.setExecutionTime(stopWatch.getLastTaskTimeMillis());
+      // todo memory usage
+      executionResult.setMemoryUsage(1000L);
+      executionResult.setExecutionTime(stopWatch.getLastTaskTimeMillis());
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return executionMessage;
+    return executionResult;
   }
 }

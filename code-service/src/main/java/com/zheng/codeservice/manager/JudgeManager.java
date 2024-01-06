@@ -27,7 +27,6 @@ public class JudgeManager {
     SubmittedQuestion submittedQuestion = executionContext.getSubmittedQuestion();
     String language = submittedQuestion.getLanguage();
     JudgeStrategy judgeStrategy = new DefaultJudgeStrategy();
-    log.info("default judge strategy");
     return judgeStrategy.doJudge(executionContext);
   }
 }

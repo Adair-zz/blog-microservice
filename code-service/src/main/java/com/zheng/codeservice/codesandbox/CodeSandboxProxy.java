@@ -23,6 +23,6 @@ public class CodeSandboxProxy implements CodeSandbox {
     log.info("CodeSandbox request info: " + codeExecutionRequest.toString());
     CodeExecutionResponse codeExecutionResponse = codeSandbox.executeCode(codeExecutionRequest);
     log.info("CodeSandbox response info: " + codeExecutionResponse.toString());
-    return null;
+    return codeExecutionResponse;
   }
 }

@@ -45,7 +45,6 @@ public class ExecutionServiceImpl implements ExecutionService {
   
   @Override
   public SubmittedQuestion doExecution(Long submittedQuestionId) {
-    log.info("execution service implementation");
     SubmittedQuestion submittedQuestion = questionFeignClient.getSubmittedQuestionById(submittedQuestionId);
     if (submittedQuestion == null) {
       throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "Not found submitted question");

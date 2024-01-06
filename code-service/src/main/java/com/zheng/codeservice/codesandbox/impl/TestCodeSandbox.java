@@ -29,7 +29,6 @@ public class TestCodeSandbox implements CodeSandbox {
     executionInfo.setExecutionMessage("accept");
     executionInfo.setMemoryUsage(100L);
     executionInfo.setExecutionTime(200L);
-    log.info("test code sandbox");
     
     codeExecutionResponse.setExecutionInfo(executionInfo);
     return codeExecutionResponse;

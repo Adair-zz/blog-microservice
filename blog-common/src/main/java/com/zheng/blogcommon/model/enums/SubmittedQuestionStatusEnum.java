@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
  */
 public enum SubmittedQuestionStatusEnum {
   
-  WAITING("wait", 0),
-  RUNNING("running", 1),
-  SUCCESS("success", 2),
+  SUCCESS("success", 0),
+  WAITING("wait", 1),
+  RUNNING("running", 2),
   FAILURE("failure", 3);
   
   private final String status;

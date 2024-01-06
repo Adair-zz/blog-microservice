@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.zheng.blogcommon.model.codesandbox.CodeExecutionRequest;
 import com.zheng.blogcommon.model.codesandbox.CodeExecutionResponse;
 import com.zheng.blogcommon.model.codesandbox.ExecutionInfo;
-import com.zheng.blogcommon.model.codesandbox.ExecutionMessage;
+import com.zheng.blogcommon.model.codesandbox.ExecutionResult;
 import com.zheng.blogcommon.model.enums.SubmittedQuestionStatusEnum;
 import com.zheng.codeservice.codesandbox.CodeSandbox;
 import com.zheng.codeservice.utils.ProcessUtils;
@@ -39,13 +39,14 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
     File userCodeTempFile = saveCodeToFile(code);
     
     // compile user code file
-    ExecutionMessage executionMessage = compileFile(userCodeTempFile);
+    ExecutionResult executionResult = compileFile(userCodeTempFile);
+    log.info(executionResult.toString());
     
     // run compiled File
-    List<ExecutionMessage> executionMessageList = runCompiledFile(userCodeTempFile, inputList);
+    List<ExecutionResult> executionResultList = runCompiledFile(userCodeTempFile, inputList);
     
     // get execution response
-    CodeExecutionResponse codeExecutionResponse = getExecutionResponse(executionMessageList);
+    CodeExecutionResponse codeExecutionResponse = getExecutionResponse(executionResultList);
     
     // delete temp file
     boolean isDelete = deleteFile(userCodeTempFile);
@@ -71,57 +72,57 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
     return userCodeFile;
   }
   
-  private ExecutionMessage compileFile(File userCodeFile) {
+  private ExecutionResult compileFile(File userCodeFile) {
     String compileCommand = String.format("javac -encoding utf-8 %s", userCodeFile.getAbsolutePath());
     try {
       Process compileProcess = Runtime.getRuntime().exec(compileCommand);
-      ExecutionMessage executionMessage = ProcessUtils.runProcess(compileProcess);
-      if (executionMessage.getExitValue() != 0) {
+      ExecutionResult executionResult = ProcessUtils.runProcess(compileProcess);
+      if (executionResult.getExitValue() != 0) {
         throw new RuntimeException("Fail to compile user code");
       }
-      return executionMessage;
+      return executionResult;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
   
-  private List<ExecutionMessage> runCompiledFile(File userCodeFile, List<String> inputList) {
+  private List<ExecutionResult> runCompiledFile(File userCodeFile, List<String> inputList) {
     String userCodeParentPath = userCodeFile.getParentFile().getAbsolutePath();
     
-    List<ExecutionMessage> executionMessageList = new ArrayList<>();
+    List<ExecutionResult> executionResultList = new ArrayList<>();
     for (String inputArgs : inputList) {
       String runCommand = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeParentPath, inputArgs);
       try {
         Process process = Runtime.getRuntime().exec(runCommand);
-        ExecutionMessage executionMessage = ProcessUtils.runProcess(process);
-        executionMessageList.add(executionMessage);
+        ExecutionResult executionResult = ProcessUtils.runProcess(process);
+        executionResultList.add(executionResult);
       } catch (Exception e) {
         throw new RuntimeException("Fail to run compiled code", e);
       }
     }
-    return executionMessageList;
+    return executionResultList;
   }
   
-  public CodeExecutionResponse getExecutionResponse(List<ExecutionMessage> executionMessageList) {
+  public CodeExecutionResponse getExecutionResponse(List<ExecutionResult> executionResultList) {
     CodeExecutionResponse codeExecutionResponse = new CodeExecutionResponse();
     List<String> outputList = new ArrayList<>();
     
     long maxTime = 0;
-    for (ExecutionMessage executionMessage : executionMessageList) {
-      String errorMessage = executionMessage.getErrorMessage();
+    for (ExecutionResult executionResult : executionResultList) {
+      String errorMessage = executionResult.getErrorMessage();
       if (StrUtil.isNotBlank(errorMessage)) {
         codeExecutionResponse.setMessage(errorMessage);
         codeExecutionResponse.setStatus(SubmittedQuestionStatusEnum.FAILURE.getValue());
         break;
       }
-      outputList.add(executionMessage.getMessage());
-      Long time = executionMessage.getExecutionTime();
+      outputList = executionResult.getOutputList();
+      Long time = executionResult.getExecutionTime();
       if (time != null) {
         maxTime = Math.max(maxTime, time);
       }
     }
     
-    if (outputList.size() == executionMessageList.size()) {
+    if (outputList.size() == executionResultList.size()) {
       codeExecutionResponse.setStatus(SubmittedQuestionStatusEnum.SUCCESS.getValue());
     }
     codeExecutionResponse.setOutputList(outputList);
@@ -137,7 +138,7 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
   public boolean deleteFile(File file) {
     if (file.getParentFile() != null) {
       String fileParentPath = file.getParentFile().getAbsolutePath();
-      boolean isDelete = FileUtil.del(file);
+      boolean isDelete = FileUtil.del(fileParentPath);
       return isDelete;
     }
     return true;

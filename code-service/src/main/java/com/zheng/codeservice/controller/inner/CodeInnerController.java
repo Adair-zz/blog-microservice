@@ -25,7 +25,6 @@ public class CodeInnerController implements CodeFeignClient {
   @Override
   @PostMapping("/do")
   public SubmittedQuestion doExecution(Long submittedQuestionId) {
-    log.info("code inner controller");
     return executionService.doExecution(submittedQuestionId);
   }
 }
