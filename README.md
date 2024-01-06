@@ -20,7 +20,7 @@
   - [ ] 自定义题目顺序
 - [x] 更新面试题目
 - [x] 删除面试题目
-- [x] 查找面试题目：
+- [x] 查询面试题目：
   - [ ] Elasticsearch
 
 
@@ -30,8 +30,9 @@
 - [x] 添加面试题目
 - [x] 更新面试题目
 - [x] 删除面试题目
-- [x] 查找面试题目：
+- [x] 查询面试题目：
   - [ ] Elasticsearch
+- [ ] 代码结果和提交记录查询
 
 
 
@@ -41,8 +42,12 @@
   - [x] 测试代码沙箱
   - [x] 本地代码沙箱
   - [ ] 第三方代码沙箱
+  - [ ] 改进代码结构
   - [ ] 抽离成独立模块
-
+  - [ ] 代码模式
+    - [x] JVM命令行参数
+    - [ ] ACM模式
+    - [ ] 核心代码模式
 - [x] 判断策略：
   - [x] 默认判断策略
 - [ ] 程序安全控制(In Progress)
@@ -62,6 +67,14 @@
 
 
 
+## api模块（api-service）
+
+- [x] UserClientFeign
+- [x] QuestionClientFeign
+- [x] CodeClientFeign
+
+
+
 ### Nacos
 
 - [ ] 配置管理
@@ -71,3 +84,9 @@
 ## 前端
 
 [blog-frontend](https://github.com/Adair-zz/blog-frontend)
+
+![code_page](code_page.png)
+
+![question_page](question_page.png)
+
+![interview_page](interview_page.png)
