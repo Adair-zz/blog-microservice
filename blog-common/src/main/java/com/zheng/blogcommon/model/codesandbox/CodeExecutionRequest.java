@@ -32,4 +32,9 @@ public class CodeExecutionRequest {
    * programming language
    */
   private String language;
+  
+  /**
+   * execution mode
+   */
+  private String mode;
 }

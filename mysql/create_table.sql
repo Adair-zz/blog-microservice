@@ -59,3 +59,6 @@ create table if not exists submitted_question (
     index idx_userId (userId)
 ) comment 'submitted question';
 
+use blog;
+
+alter table submitted_question add column `mode` varchar(128) default 'commandline' comment 'execution mode';

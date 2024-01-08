@@ -75,6 +75,7 @@ public class ExecutionServiceImpl implements ExecutionService {
     codeSandbox = new CodeSandboxProxy(codeSandbox);
     String language = submittedQuestion.getLanguage();
     String code = submittedQuestion.getCode();
+    String mode = submittedQuestion.getMode();
     String judgeCaseStr = question.getJudgeCase();
     List<JudgeCase> judgeCaseList = JSONUtil.toList(judgeCaseStr, JudgeCase.class);
     List<String> inputList = judgeCaseList.stream().map(JudgeCase::getInput).collect(Collectors.toList());
@@ -82,6 +83,7 @@ public class ExecutionServiceImpl implements ExecutionService {
         .code(code)
         .language(language)
         .inputList(inputList)
+        .mode(mode)
         .build();
   
     CodeExecutionResponse codeExecutionResponse = codeSandbox.executeCode(codeExecutionRequest);

@@ -56,6 +56,7 @@ public class SubmittedQuestionServiceImpl extends ServiceImpl<SubmittedQuestionM
     submittedQuestion.setUserId(userId);
     submittedQuestion.setQuestionId(questionId);
     submittedQuestion.setLanguage(language);
+    submittedQuestion.setMode(submittedQuestionAddRequest.getMode());
     submittedQuestion.setCode(submittedQuestionAddRequest.getCode());
     submittedQuestion.setStatus(SubmittedQuestionStatusEnum.WAITING.getValue());
     submittedQuestion.setJudgeInfo("{}");
@@ -68,7 +69,6 @@ public class SubmittedQuestionServiceImpl extends ServiceImpl<SubmittedQuestionM
     log.info(submittedQuestion.getId() + "");
     // todo message queue
     CompletableFuture.runAsync(() -> {
-      log.info("执行代码");
       codeFeignClient.doExecution(submittedQuestionId);
     });
     return submittedQuestionId;

@@ -30,6 +30,11 @@ public class SubmittedQuestion implements Serializable {
      * user code
      */
     private String code;
+    
+    /**
+     * execution mode
+     */
+    private String mode;
 
     /**
      * judge info

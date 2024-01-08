@@ -8,6 +8,8 @@ import com.zheng.blogcommon.model.codesandbox.ExecutionInfo;
 import com.zheng.blogcommon.model.codesandbox.ExecutionResult;
 import com.zheng.blogcommon.model.enums.SubmittedQuestionStatusEnum;
 import com.zheng.codeservice.codesandbox.CodeSandbox;
+import com.zheng.codeservice.codesandbox.impl.mode.ExecutionMode;
+import com.zheng.codeservice.codesandbox.impl.mode.ExecutionModeFactory;
 import com.zheng.codeservice.utils.ProcessUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +35,7 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
   public CodeExecutionResponse executeCode(CodeExecutionRequest codeExecutionRequest) {
     List<String> inputList = codeExecutionRequest.getInputList();
     String code = codeExecutionRequest.getCode();
-    String language = codeExecutionRequest.getLanguage();
+    String mode = codeExecutionRequest.getMode();
     
     // save code to a temp file
     File userCodeTempFile = saveCodeToFile(code);
@@ -43,7 +45,8 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
     log.info(executionResult.toString());
     
     // run compiled File
-    List<ExecutionResult> executionResultList = runCompiledFile(userCodeTempFile, inputList);
+    ExecutionMode executionMode = ExecutionModeFactory.createExecutionMode(mode);
+    List<ExecutionResult> executionResultList = executionMode.executeCompiledFile(userCodeTempFile, inputList);
     
     // get execution response
     CodeExecutionResponse codeExecutionResponse = getExecutionResponse(executionResultList);
@@ -85,24 +88,7 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
       throw new RuntimeException(e);
     }
   }
-  
-  private List<ExecutionResult> runCompiledFile(File userCodeFile, List<String> inputList) {
-    String userCodeParentPath = userCodeFile.getParentFile().getAbsolutePath();
-    
-    List<ExecutionResult> executionResultList = new ArrayList<>();
-    for (String inputArgs : inputList) {
-      String runCommand = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeParentPath, inputArgs);
-      try {
-        Process process = Runtime.getRuntime().exec(runCommand);
-        ExecutionResult executionResult = ProcessUtils.runProcess(process);
-        executionResultList.add(executionResult);
-      } catch (Exception e) {
-        throw new RuntimeException("Fail to run compiled code", e);
-      }
-    }
-    return executionResultList;
-  }
-  
+
   public CodeExecutionResponse getExecutionResponse(List<ExecutionResult> executionResultList) {
     CodeExecutionResponse codeExecutionResponse = new CodeExecutionResponse();
     List<String> outputList = new ArrayList<>();
