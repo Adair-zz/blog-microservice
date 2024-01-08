@@ -4,6 +4,7 @@ import com.zheng.blogcommon.common.ErrorCode;
 import com.zheng.blogcommon.exception.BusinessException;
 import com.zheng.blogcommon.model.codesandbox.ExecutionResult;
 import com.zheng.codeservice.utils.ProcessUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,7 +18,11 @@ import java.util.List;
  * @Description
  * @Created 01/08/2024 - 10:52
  */
+@Slf4j
 public class ACMExecution implements ExecutionMode {
+  
+  private static final long TIME_OUT = 10000L;
+  
   @Override
   public List<ExecutionResult> executeCompiledFile(File userCodeFile, List<String> inputList) {
     List<ExecutionResult> executionResultList = new ArrayList<>();
@@ -26,6 +31,18 @@ public class ACMExecution implements ExecutionMode {
       processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
       try {
         Process process = processBuilder.start();
+        
+        // time out control
+        new Thread(() -> {
+          try {
+            Thread.sleep(TIME_OUT);
+            log.info("ACM execution timeout");
+            process.destroy();
+          } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+          }
+        }).start();
+        
         process.getOutputStream().write(inputArgs.getBytes(StandardCharsets.UTF_8));
         process.getOutputStream().write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
         process.getOutputStream().close();
