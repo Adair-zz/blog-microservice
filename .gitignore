@@ -5,7 +5,9 @@ target/
 !**/src/test/**/target/
 logs/
 tempCode/
-
+./.mysql-data/
+./.nacos-data/
+./.redis-data/
 
 ### STS ###
 .apt_generated

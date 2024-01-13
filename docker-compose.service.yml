@@ -1,0 +1,66 @@
+version: '2'
+services:
+  blog-gateway:
+    container_name: blog-gateway
+    build:
+      context: ./blog-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+
+  user-service:
+    container_name: user-service
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - mynetwork
+    depends_on:
+      - blog-gateway
+
+  interview-service:
+    container_name: interview-service
+    build:
+      context: ./interview-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    networks:
+      - mynetwork
+    depends_on:
+      - blog-gateway
+      - user-service
+
+  question-service:
+    container_name: question-service
+    build:
+      context: ./question-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    networks:
+      - mynetwork
+    depends_on:
+      - blog-gateway
+      - user-service
+
+  code-service:
+    container_name: code-service
+    build:
+      context: ./code-service
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    networks:
+      - mynetwork
+    depends_on:
+      - blog-gateway
+      - user-service
+      - question-service
+
+networks:
+  mynetwork:

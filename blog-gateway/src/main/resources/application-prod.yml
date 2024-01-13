@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: blog-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos:8848
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+        - id: interview-service
+          uri: lb://interview-service
+          predicates:
+            - Path=/api/interview/**
+        - id: question-service
+          uri: lb://question-service
+          predicates:
+            - Path=/api/question/**
+        - id: code-service
+          uri: lb://code-service
+          predicates:
+            - Path=/api/code/**
+knife4j:
+  gateway:
+    enabled: true
+    strategy: discover
+    discover:
+      enabled: true
+      version: openapi3
