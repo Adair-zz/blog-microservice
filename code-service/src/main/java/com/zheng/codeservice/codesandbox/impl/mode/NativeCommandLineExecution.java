@@ -16,7 +16,7 @@ import java.util.List;
  * @Created 01/08/2024 - 10:51
  */
 @Slf4j
-public class CommandLineExecution implements ExecutionMode {
+public class NativeCommandLineExecution implements CodeExecutionMode {
   
   private static final long TIME_OUT = 10000L;
   

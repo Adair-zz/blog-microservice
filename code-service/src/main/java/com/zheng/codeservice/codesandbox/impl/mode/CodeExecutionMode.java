@@ -10,7 +10,7 @@ import java.util.List;
  * @Description
  * @Created 01/08/2024 - 10:43
  */
-public interface ExecutionMode {
+public interface CodeExecutionMode {
   
   List<ExecutionResult> executeCompiledFile(File userCodeFile, List<String> inputList);
   

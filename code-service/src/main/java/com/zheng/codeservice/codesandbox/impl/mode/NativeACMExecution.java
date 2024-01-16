@@ -6,9 +6,7 @@ import com.zheng.blogcommon.model.codesandbox.ExecutionResult;
 import com.zheng.codeservice.utils.ProcessUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +17,7 @@ import java.util.List;
  * @Created 01/08/2024 - 10:52
  */
 @Slf4j
-public class ACMExecution implements ExecutionMode {
+public class NativeACMExecution implements CodeExecutionMode {
   
   private static final long TIME_OUT = 10000L;
   

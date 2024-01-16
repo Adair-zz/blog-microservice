@@ -8,8 +8,8 @@ import com.zheng.blogcommon.model.codesandbox.ExecutionInfo;
 import com.zheng.blogcommon.model.codesandbox.ExecutionResult;
 import com.zheng.blogcommon.model.enums.SubmittedQuestionStatusEnum;
 import com.zheng.codeservice.codesandbox.CodeSandbox;
-import com.zheng.codeservice.codesandbox.impl.mode.ExecutionMode;
-import com.zheng.codeservice.codesandbox.impl.mode.ExecutionModeFactory;
+import com.zheng.codeservice.codesandbox.impl.mode.CodeExecutionMode;
+import com.zheng.codeservice.codesandbox.impl.mode.NativeExecutionModeFactory;
 import com.zheng.codeservice.utils.ProcessUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,7 @@ import java.util.UUID;
  * @Created 01/04/2024 - 21:08
  */
 @Slf4j
-public class LocalCodeSandboxTemplate implements CodeSandbox {
+public abstract class LocalCodeSandboxTemplate implements CodeSandbox {
   
   private static final String GLOBAL_CODE_DIR_NAME = "tempCode";
   
@@ -45,8 +45,7 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
     log.info(executionResult.toString());
     
     // run compiled File
-    ExecutionMode executionMode = ExecutionModeFactory.createExecutionMode(mode);
-    List<ExecutionResult> executionResultList = executionMode.executeCompiledFile(userCodeTempFile, inputList);
+    List<ExecutionResult> executionResultList = runCompiledFile(mode, userCodeTempFile, inputList);
     
     // get execution response
     CodeExecutionResponse codeExecutionResponse = getExecutionResponse(executionResultList);
@@ -56,7 +55,7 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
     if (!isDelete) {
       log.error("Delete user temp file error, userCodeTempFile = {}", userCodeTempFile.getAbsolutePath());
     }
-  
+    
     return codeExecutionResponse;
   }
   
@@ -88,7 +87,9 @@ public class LocalCodeSandboxTemplate implements CodeSandbox {
       throw new RuntimeException(e);
     }
   }
-
+  
+  public abstract List<ExecutionResult> runCompiledFile(String mode, File userCodeTempFile, List<String> inputList);
+  
   public CodeExecutionResponse getExecutionResponse(List<ExecutionResult> executionResultList) {
     CodeExecutionResponse codeExecutionResponse = new CodeExecutionResponse();
     List<String> outputList = new ArrayList<>();

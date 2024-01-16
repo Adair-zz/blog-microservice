@@ -1,5 +1,6 @@
 package com.zheng.codeservice.codesandbox;
 
+import com.zheng.codeservice.codesandbox.impl.local.DockerCodeSandbox;
 import com.zheng.codeservice.codesandbox.impl.local.LocalCodeSandbox;
 import com.zheng.codeservice.codesandbox.impl.TestCodeSandbox;
 
@@ -16,6 +17,8 @@ public class CodeSandboxFactory {
         return new TestCodeSandbox();
       case "local":
         return new LocalCodeSandbox();
+      case "docker":
+        return new DockerCodeSandbox();
       default:
         return new TestCodeSandbox();
     }
