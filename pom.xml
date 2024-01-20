@@ -14,6 +14,7 @@
         <module>interview-service</module>
         <module>question-service</module>
         <module>code-service</module>
+        <module>chat-service</module>
     </modules>
     <name>blog-microservice</name>
     <description>Blog Service</description>

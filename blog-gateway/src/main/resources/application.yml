@@ -25,6 +25,10 @@ spring:
           uri: lb://code-service
           predicates:
             - Path=/api/code/**
+        - id: chat-service
+          uri: ws://chat-service
+          predicates:
+            - Path=/api/customer-service
 knife4j:
   gateway:
     enabled: true
