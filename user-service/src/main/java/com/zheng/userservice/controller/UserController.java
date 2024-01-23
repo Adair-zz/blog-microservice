@@ -258,4 +258,29 @@ public class UserController {
     ThrowUtils.throwIf(!isUpdate, ErrorCode.OPERATION_ERROR);
     return ResultUtils.success(true);
   }
+  
+  /**
+   * user take attendance.
+   *
+   * @return
+   */
+  @PostMapping("/attendance")
+  public BaseResponse<Boolean> takeAttendance(HttpServletRequest httpServletRequest) {
+    Boolean isTakeAttendance = userService.takeAttendance(httpServletRequest);
+    ThrowUtils.throwIf(!isTakeAttendance, ErrorCode.OPERATION_ERROR);
+    return ResultUtils.success(true);
+  }
+  
+  /**
+   * count attendance for current month.
+   *
+   * @param httpServletRequest
+   * @return
+   */
+  @PostMapping("/attendance/count")
+  public BaseResponse<Integer> attendanceCount(HttpServletRequest httpServletRequest) {
+    Integer attendanceNumber = userService.attendanceCount(httpServletRequest);
+    return ResultUtils.success(attendanceNumber);
+    
+  }
 }

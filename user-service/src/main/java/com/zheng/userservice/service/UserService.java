@@ -1,6 +1,7 @@
 package com.zheng.userservice.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zheng.blogcommon.common.BaseResponse;
 import com.zheng.blogcommon.model.dto.user.UserQueryRequest;
 import com.zheng.blogcommon.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -100,4 +101,19 @@ public interface UserService extends IService<User> {
    * @return
    */
   QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
+  
+  /**
+   * user take attendance.
+   *
+   * @return
+   */
+  Boolean takeAttendance(HttpServletRequest httpServletRequest);
+  
+  /**
+   * count attendance for current month.
+   *
+   * @param httpServletRequest
+   * @return
+   */
+  Integer attendanceCount(HttpServletRequest httpServletRequest);
 }

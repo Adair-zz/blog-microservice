@@ -2,6 +2,7 @@ package com.zheng.userservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zheng.blogcommon.common.BaseResponse;
 import com.zheng.blogcommon.common.ErrorCode;
 import com.zheng.blogcommon.constant.CommonConstant;
 import com.zheng.blogcommon.constant.UserConstant;
@@ -19,11 +20,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.connection.BitFieldSubCommands;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,15 +38,18 @@ import java.util.stream.Collectors;
  *
 * @author Zheng Zhang
 * @description 针对表【user(user)】的数据库操作Service实现
-* @createDate 2023-04-22 17:21:28
-*/
+ * @createDate 2023-04-22 17:21:28
+ */
 @Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-    implements UserService{
+    implements UserService {
   
   @Resource
   private UserMapper userMapper;
+  
+  @Resource
+  private RedisTemplate redisTemplate;
   
   /**
    * Salt Encryption
@@ -194,7 +202,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     String userRole = userQueryRequest.getUserRole();
     String sortField = userQueryRequest.getSortField();
     String sortOrder = userQueryRequest.getSortOrder();
-    
+  
     QueryWrapper<User> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq(id != null, "id", id);
     queryWrapper.eq(StringUtils.isNotBlank(userRole), "userRole", userRole);
@@ -203,6 +211,58 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         sortField);
     return queryWrapper;
   }
+  
+  @Override
+  public Boolean takeAttendance(HttpServletRequest httpServletRequest) {
+    User user = (User) httpServletRequest.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+    Long userId = user.getId();
+    
+    LocalDateTime localDateTime = LocalDateTime.now();
+    int dayOfMonth = localDateTime.getDayOfMonth();
+    String keySuffix = localDateTime.format(DateTimeFormatter.ofPattern(":yyyyMM"));
+    String key = UserConstant.USER_ATTENDANCE_KEY + userId + keySuffix;
+    
+    redisTemplate.opsForValue().setBit(key, dayOfMonth - 1, true);
+    return true;
+  }
+  
+  @Override
+  public Integer attendanceCount(HttpServletRequest httpServletRequest) {
+    User user = (User) httpServletRequest.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+    Long userId = user.getId();
+    
+    LocalDateTime localDateTime = LocalDateTime.now();
+    int dayOfMonth = localDateTime.getDayOfMonth();
+    String keySuffix = localDateTime.format(DateTimeFormatter.ofPattern(":yyyyMM"));
+    String key = UserConstant.USER_ATTENDANCE_KEY + userId + keySuffix;
+    
+    List<Long> result = redisTemplate.opsForValue().bitField(
+        key,
+        BitFieldSubCommands.create().
+            get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth)).
+            valueAt(0)
+    );
+    if (result == null || result.isEmpty()) {
+      return 0;
+    }
+    
+    Long num = result.get(0);
+    if (num == null || num == 0) {
+      return 0;
+    }
+    
+    int attendanceNumber = 0;
+    while (true) {
+      if ((num & 1) == 0) {
+        break;
+      } else {
+        attendanceNumber++;
+      }
+      num >>>= 1;
+    }
+    return attendanceNumber;
+  }
+  
 }
 
 
