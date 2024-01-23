@@ -44,21 +44,28 @@ create table if not exists question (
     index idx_userId (userId)
 ) comment 'question';
 
-create table if not exists submitted_question (
-    `id` bigint auto_increment comment 'id' primary key,
-    `language` varchar(128) not null comment 'programming language',
-    `code` text not null comment 'user code',
-    `judgeInfo` text null comment 'judge info',
-    `status` tinyint default 0 not null comment 'result status: 0-wait, 1-in progress, 2-success, 3-failure',
-    `questionId` bigint not null comment 'question id',
-    `userId` bigint not null comment 'user id',
-    `createTime` datetime default CURRENT_TIMESTAMP not null comment 'creation time',
-    `updateTime` datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
-    `idDelete` tinyint default 0 not null comment 'is delete',
-    index idx_questionId (questionId),
-    index idx_userId (userId)
+create table if not exists submitted_question(
+                                                 `id`         bigint auto_increment comment 'id' primary key,
+                                                 `language`   varchar(128)                           not null comment 'programming language',
+                                                 `code`       text                                   not null comment 'user code',
+                                                 `mode`       varchar(128) default 'commandline' comment 'execution mode',
+                                                 `judgeInfo`  text                                   null comment 'judge info',
+                                                 `status`     tinyint      default 0                 not null comment 'result status: 0-wait, 1-in progress, 2-success, 3-failure',
+                                                 `questionId` bigint                                 not null comment 'question id',
+                                                 `userId`     bigint                                 not null comment 'user id',
+                                                 `createTime` datetime     default CURRENT_TIMESTAMP not null comment 'creation time',
+                                                 `updateTime` datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
+                                                 `idDelete`   tinyint      default 0                 not null comment 'is delete',
+                                                 index idx_questionId (questionId),
+                                                 index idx_userId (userId)
 ) comment 'submitted question';
 
-use blog;
-
-alter table submitted_question add column `mode` varchar(128) default 'commandline' comment 'execution mode';
+create table if not exists coupon
+(
+    `id`         bigint auto_increment comment 'id' primary key,
+    `title`      varchar(512)                       not null comment 'voucher title',
+    `stock`      int(8) unsigned                    not null comment 'voucher stock',
+    `createTime` datetime default CURRENT_TIMESTAMP not null comment 'creation time',
+    `updateTime` datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
+    `idDelete`   tinyint  default 0                 not null comment 'is delete'
+) comment 'coupon';

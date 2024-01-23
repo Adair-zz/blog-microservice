@@ -62,5 +62,31 @@ services:
       - user-service
       - question-service
 
+  chat-service:
+    container_name: chat-service
+    build:
+      context: ./chat-service
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    networks:
+      - mynetwork
+    depends_on:
+      - blog-gateway
+      - user-service
+
+  customer-service:
+    container_name: customer-service
+    build:
+      context: ./customer-service
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8086"
+    networks:
+      - mynetwork
+    depends_on:
+      - blog-gateway
+      - user-service
+
 networks:
   mynetwork:
