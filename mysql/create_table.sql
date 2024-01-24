@@ -63,9 +63,19 @@ create table if not exists submitted_question(
 create table if not exists coupon
 (
     `id`         bigint auto_increment comment 'id' primary key,
-    `title`      varchar(512)                       not null comment 'voucher title',
-    `stock`      int(8) unsigned                    not null comment 'voucher stock',
+    `title`      varchar(512)                       not null comment 'coupon title',
+    `stock`      int(8) unsigned                    not null comment 'coupon stock',
     `createTime` datetime default CURRENT_TIMESTAMP not null comment 'creation time',
     `updateTime` datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
     `idDelete`   tinyint  default 0                 not null comment 'is delete'
 ) comment 'coupon';
+
+create table if not exists coupon_order
+(
+    `id`         bigint                             not null primary key comment 'primary key',
+    `userId`     bigint                             not null comment 'user id',
+    `coupon_id`  bigint                             not null comment 'coupon id',
+    `createTime` datetime default CURRENT_TIMESTAMP not null comment 'creation time',
+    `updateTime` datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
+    `idDelete`   tinyint  default 0                 not null comment 'is delete'
+) comment 'coupon order';

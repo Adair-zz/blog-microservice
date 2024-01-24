@@ -8,28 +8,28 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * coupon
+ * coupon order
  *
- * @TableName coupon
+ * @TableName coupon_order
  */
-@TableName(value = "coupon")
+@TableName(value = "coupon_order")
 @Data
-public class Coupon implements Serializable {
+public class CouponOrder implements Serializable {
   /**
-   * id
+   * primary key
    */
-  @TableId(type = IdType.AUTO)
+  @TableId
   private Long id;
   
   /**
-   * voucher title
+   * user id
    */
-  private String title;
+  private Long userId;
   
   /**
-   * voucher stock
+   * coupon id
    */
-  private Integer stock;
+  private Long coupon_id;
   
   /**
    * creation time
