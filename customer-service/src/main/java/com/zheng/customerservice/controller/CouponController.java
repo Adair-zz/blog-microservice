@@ -18,9 +18,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: Zheng Zhang
@@ -41,9 +39,10 @@ public class CouponController {
   private UserFeignClient userFeignClient;
   
   @PostMapping("/add")
-  @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-  public BaseResponse<Long> addCouponse(CouponAddRequest couponAddRequest, HttpServletRequest httpServletRequest) {
+  public BaseResponse<Long> addCouponse(@RequestBody CouponAddRequest couponAddRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
+    boolean isAdmin = userFeignClient.isAdmin(loginUser);
+    ThrowUtils.throwIf(!isAdmin, ErrorCode.NO_AUTH_ERROR);
     
     if (couponAddRequest == null) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
