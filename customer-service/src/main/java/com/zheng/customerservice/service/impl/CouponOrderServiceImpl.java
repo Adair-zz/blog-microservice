@@ -57,6 +57,8 @@ public class CouponOrderServiceImpl extends ServiceImpl<CouponOrderMapper, Coupo
       boolean isCouponUpdate = couponService.update()
           .setSql("stock = stock - 1")
           .eq("id", couponId)
+//          .eq("stock", coupon.getStock()) //失败率高
+          .gt("stock", 0)
           .update();
       ThrowUtils.throwIf(!isCouponUpdate, ErrorCode.OPERATION_ERROR);
       

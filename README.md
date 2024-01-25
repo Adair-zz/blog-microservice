@@ -10,6 +10,7 @@
 - [x] 登录
 - [x] 退出
 - [x] 用户管理
+- [x] 签到和本月连续签到统计（redis bitmap）
 
 
 
@@ -54,7 +55,7 @@
   - [x] 超时控制（守护线程）
   - [x] 限制资源分配（内存）
   - [ ] 限制用户操作权限（安全管理器）
-  - [ ] 运行环境隔离（Docker）
+  - [x] 运行环境隔离（Docker）
 - [ ] 消息队列
 
 
@@ -65,21 +66,30 @@
 - [x] 整合文档
 - [ ] Sentinel网关层限流
 
-
-
 ## api模块（api-service）
 
 - [x] UserClientFeign
 - [x] QuestionClientFeign
 - [x] CodeClientFeign
 
+## 客服模块（chat-service）
 
+- [x] 普通用户向在线管理员发送消息
+- [ ] 更多在线聊天功能
+
+## 客户模块（customer-service）
+
+- [x] 抢购优惠卷
+- [x] 超卖问题
+  - [x] 乐观锁思想解决
+- [x] 一人一单问题
+  - [x] 单机下使用synchronized锁
+  - [x] 编写lua脚本自定义reentrant lock
+  - [ ] 使用redisson改进
 
 ### Nacos
 
 - [ ] 配置管理
-
-
 
 ## 前端
 
