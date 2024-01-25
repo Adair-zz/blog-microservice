@@ -62,16 +62,16 @@ public class CouponController {
   }
   
   @PostMapping("/get")
-  public BaseResponse<Long> getCoupon(CouponGetRequest couponGetRequest, HttpServletRequest httpServletRequest) {
+  public BaseResponse<Long> getCoupon(@RequestBody CouponGetRequest couponGetRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
-    
+  
     if (couponGetRequest == null) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
-    
+  
     Long couponId = couponGetRequest.getCouponId();
     Long userId = loginUser.getId();
-    
+  
     Long orderId = couponOrderService.createOrder(couponId, userId);
     return ResultUtils.success(orderId);
   }

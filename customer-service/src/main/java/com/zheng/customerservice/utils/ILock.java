@@ -10,10 +10,9 @@ public interface ILock {
   /**
    * try to get the lock.
    *
-   * @param timeout
    * @return
    */
-  boolean tryLock(long timeout);
+  boolean tryLock();
   
   /**
    * release lock.

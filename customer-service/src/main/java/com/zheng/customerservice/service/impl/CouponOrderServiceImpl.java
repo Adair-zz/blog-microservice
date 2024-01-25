@@ -14,6 +14,7 @@ import com.zheng.customerservice.utils.RedisLock;
 import com.zheng.customerservice.utils.RedisUniqueID;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,6 +35,9 @@ public class CouponOrderServiceImpl extends ServiceImpl<CouponOrderMapper, Coupo
   @Resource
   private RedisTemplate redisTemplate;
   
+  @Resource
+  private StringRedisTemplate stringRedisTemplate;
+  
   @Override
   public Long createOrder(Long couponId, Long userId) {
     Coupon coupon = couponService.getById(couponId);
@@ -42,8 +46,8 @@ public class CouponOrderServiceImpl extends ServiceImpl<CouponOrderMapper, Coupo
     }
     
     // synchronized (userId.toString().intern())
-    RedisLock lock = new RedisLock("order:" + userId, redisTemplate);
-    boolean isLock = lock.tryLock(1000);
+    RedisLock lock = new RedisLock("order:" + userId, stringRedisTemplate, 10);
+    boolean isLock = lock.tryLock();
     ThrowUtils.throwIf(!isLock, ErrorCode.OPERATION_ERROR, "Duplicate orders are not allowed");
     
     try {
@@ -52,15 +56,15 @@ public class CouponOrderServiceImpl extends ServiceImpl<CouponOrderMapper, Coupo
       
       boolean isCouponUpdate = couponService.update()
           .setSql("stock = stock - 1")
-          .eq("couponId", couponId)
+          .eq("id", couponId)
           .update();
       ThrowUtils.throwIf(!isCouponUpdate, ErrorCode.OPERATION_ERROR);
       
       CouponOrder couponOrder = new CouponOrder();
       long orderId = redisUniqueID.generateId("order");
-      couponOrder.setId(orderId);
+      couponOrder.setOrderId(orderId);
       couponOrder.setUserId(userId);
-      couponOrder.setCoupon_id(couponId);
+      couponOrder.setCouponId(couponId);
       this.save(couponOrder);
       return orderId;
     } finally {

@@ -18,8 +18,13 @@ public class CouponOrder implements Serializable {
   /**
    * primary key
    */
-  @TableId
+  @TableId(type = IdType.AUTO)
   private Long id;
+  
+  /**
+   * order id
+   */
+  private Long orderId;
   
   /**
    * user id
@@ -29,7 +34,7 @@ public class CouponOrder implements Serializable {
   /**
    * coupon id
    */
-  private Long coupon_id;
+  private Long couponId;
   
   /**
    * creation time

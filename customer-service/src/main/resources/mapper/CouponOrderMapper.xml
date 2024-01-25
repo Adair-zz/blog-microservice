@@ -6,8 +6,9 @@
 
     <resultMap id="BaseResultMap" type="com.zheng.blogcommon.model.entity.CouponOrder">
         <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="orderId" column="orderId" jdbcType="BIGINT"/>
         <result property="userId" column="userId" jdbcType="BIGINT"/>
-        <result property="coupon_id" column="coupon_id" jdbcType="BIGINT"/>
+        <result property="couponId" column="couponId" jdbcType="BIGINT"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
         <result property="idDelete" column="idDelete" jdbcType="TINYINT"/>
@@ -15,7 +16,7 @@
 
     <sql id="Base_Column_List">
         id
-        ,userId,coupon_id,
+        ,userId,couponId,
         createTime,updateTime,idDelete
     </sql>
 </mapper>
