@@ -20,12 +20,28 @@ public class RedisLock implements ILock {
   
   private StringRedisTemplate stringRedisTemplate;
   
+  /**
+   * seconds
+   */
   private long timeout;
   
-  public RedisLock(String name, StringRedisTemplate stringRedisTemplate, long timeout) {
+  private int maxRetries;
+  
+  /**
+   * millisecond
+   */
+  private long retryInterval;
+  
+  public RedisLock(String name, StringRedisTemplate stringRedisTemplate, long timeout, int maxRetries, long retryInterval) {
     this.name = name;
     this.stringRedisTemplate = stringRedisTemplate;
     this.timeout = timeout;
+    this.maxRetries = maxRetries;
+    this.retryInterval = retryInterval;
+  }
+  
+  public RedisLock(String name, StringRedisTemplate stringRedisTemplate, long timeout) {
+    this(name, stringRedisTemplate, timeout, 3, 100);
   }
   
   private static final String KEY_PREFIX = "lock:";
@@ -59,8 +75,11 @@ public class RedisLock implements ILock {
     Object result = stringRedisTemplate.execute(
         REENTRANT_LOCK_SCRIPT,
         Collections.singletonList(key),
-        threadId, String.valueOf(timeout)
+        threadId, String.valueOf(timeout),
+        String.valueOf(maxRetries),
+        String.valueOf(retryInterval)
     );
+  
     return result != null && (Long) result == 1L;
     // 可重入锁获取
 //    Long result = redisTemplate.opsForHash().increment(key, threadId, 1);
