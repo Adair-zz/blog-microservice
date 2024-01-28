@@ -1,6 +1,7 @@
 package com.zheng.customerservice.utils;
 
 import cn.hutool.core.lang.UUID;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,24 +26,13 @@ public class RedisLock implements ILock {
    */
   private long timeout;
   
-  private int maxRetries;
-  
-  /**
-   * millisecond
-   */
-  private long retryInterval;
-  
-  public RedisLock(String name, StringRedisTemplate stringRedisTemplate, long timeout, int maxRetries, long retryInterval) {
+  public RedisLock(String name, StringRedisTemplate stringRedisTemplate, long timeout) {
     this.name = name;
     this.stringRedisTemplate = stringRedisTemplate;
     this.timeout = timeout;
-    this.maxRetries = maxRetries;
-    this.retryInterval = retryInterval;
+    
   }
-  
-  public RedisLock(String name, StringRedisTemplate stringRedisTemplate, long timeout) {
-    this(name, stringRedisTemplate, timeout, 3, 100);
-  }
+
   
   private static final String KEY_PREFIX = "lock:";
   private static final String ID_PREFIX = UUID.randomUUID().toString(true) + "-";
@@ -75,9 +65,7 @@ public class RedisLock implements ILock {
     Object result = stringRedisTemplate.execute(
         REENTRANT_LOCK_SCRIPT,
         Collections.singletonList(key),
-        threadId, String.valueOf(timeout),
-        String.valueOf(maxRetries),
-        String.valueOf(retryInterval)
+        threadId, String.valueOf(timeout)
     );
   
     return result != null && (Long) result == 1L;
