@@ -11,4 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface CouponOrderService extends IService<CouponOrder> {
   
   Long createOrder(Long couponId, Long userId);
+  
+  Long createOrderAsync(Long couponId, Long userId);
 }

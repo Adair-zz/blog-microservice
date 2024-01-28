@@ -1,11 +1,10 @@
 package com.zheng.customerservice.controller;
 
 import com.zheng.blogapi.client.UserFeignClient;
-import com.zheng.blogcommon.annotation.AuthCheck;
 import com.zheng.blogcommon.common.BaseResponse;
 import com.zheng.blogcommon.common.ErrorCode;
 import com.zheng.blogcommon.common.ResultUtils;
-import com.zheng.blogcommon.constant.UserConstant;
+import com.zheng.blogcommon.constant.RedisConstant;
 import com.zheng.blogcommon.exception.BusinessException;
 import com.zheng.blogcommon.exception.ThrowUtils;
 import com.zheng.blogcommon.model.dto.coupon.CouponAddRequest;
@@ -18,6 +17,8 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -38,6 +39,9 @@ public class CouponController {
   @Resource
   private UserFeignClient userFeignClient;
   
+  @Resource
+  private StringRedisTemplate stringRedisTemplate;
+  
   @PostMapping("/add")
   public BaseResponse<Long> addCouponse(@RequestBody CouponAddRequest couponAddRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
@@ -57,6 +61,7 @@ public class CouponController {
     Coupon newCoupon = new Coupon();
     BeanUtils.copyProperties(couponAddRequest, newCoupon);
     boolean isSave = couponService.save(newCoupon);
+    stringRedisTemplate.opsForValue().set(RedisConstant.COUPON_STOCK + newCoupon.getId(), newCoupon.getStock().toString());
     ThrowUtils.throwIf(!isSave, ErrorCode.OPERATION_ERROR);
     return ResultUtils.success(newCoupon.getId());
   }

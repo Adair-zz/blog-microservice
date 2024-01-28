@@ -62,13 +62,13 @@ public class RedisLock implements ILock {
   public boolean tryLock() {
     String key = KEY_PREFIX + name;
     String threadId = ID_PREFIX + Thread.currentThread().getId();
-    Object result = stringRedisTemplate.execute(
+    Long result = stringRedisTemplate.execute(
         REENTRANT_LOCK_SCRIPT,
         Collections.singletonList(key),
         threadId, String.valueOf(timeout)
     );
   
-    return result != null && (Long) result == 1L;
+    return result != null && result == 1L;
     // 可重入锁获取
 //    Long result = redisTemplate.opsForHash().increment(key, threadId, 1);
 //    redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
