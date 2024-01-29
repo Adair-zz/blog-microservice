@@ -6,9 +6,14 @@ spring:
     password: zz2843517195
   data:
     redis:
-      port: 6379
-      host: redis
-      database: 0
+      sentinel:
+        master: mymaster
+        nodes:
+          - redis:27000
+          - redis:27001
+  #      port: 6379
+  #      host: redis
+  #      database: 0
   cloud:
     nacos:
       discovery:

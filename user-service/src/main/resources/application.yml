@@ -8,7 +8,7 @@ spring:
     url: jdbc:mysql://localhost:3306/blog
     username: root
     password: zz2843517195
-  # session expiration time(minutes): two months
+  # session expiration time(minutes): 30 days
   session:
     timeout: 2592000
     redis:
@@ -16,9 +16,15 @@ spring:
   # redis config
   data:
     redis:
-      port: 6379
-      host: localhost
-      database: 0
+      sentinel:
+        master: mymaster
+        nodes:
+          - 127.0.0.1:27000
+          - 127.0.0.1:27001
+  #    redis:
+  #      port: 6379
+  #      host: localhost
+  #      database: 0
   cloud:
     nacos:
       discovery:
