@@ -9,6 +9,7 @@ import com.zheng.blogcommon.constant.CommonConstant;
 import com.zheng.blogcommon.constant.RedisConstant;
 import com.zheng.blogcommon.constant.UserConstant;
 import com.zheng.blogcommon.exception.BusinessException;
+import com.zheng.blogcommon.exception.ThrowUtils;
 import com.zheng.blogcommon.model.dto.user.UserQueryRequest;
 import com.zheng.blogcommon.model.entity.User;
 import com.zheng.blogcommon.model.enums.UserRoleEnum;
@@ -142,13 +143,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
   public User getLoginUser(HttpServletRequest httpServletRequest) {
     // check if user login
     User currentLoginUser = (User) httpServletRequest.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
-    if (currentLoginUser == null || currentLoginUser.getId() == null) {
+    if (currentLoginUser != null && currentLoginUser.getId() != null) {
+      return currentLoginUser;
+    }
+  
+    if (currentLoginUser.getId() == null) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
   
     long userId = currentLoginUser.getId();
     // get user info from local cache first, then check database if user exists
-    currentLoginUser = userCache.get(userId, key -> this.getById(userId));
+    currentLoginUser = userCache.get(userId, key -> this.getById(key));
+  
     if (currentLoginUser == null) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -223,6 +229,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.ASCENDING_ORDER),
         sortField);
     return queryWrapper;
+  }
+  
+  @Override
+  public boolean removeUserById(Long id) {
+    boolean isDelete = this.removeById(id);
+    userCache.invalidate(id);
+    ThrowUtils.throwIf(!isDelete, ErrorCode.OPERATION_ERROR);
+    return true;
   }
   
   @Override

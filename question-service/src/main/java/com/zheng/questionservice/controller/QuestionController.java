@@ -113,8 +113,8 @@ public class QuestionController {
       throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
     }
   
-    boolean isDelete = questionService.removeById(id);
-    ThrowUtils.throwIf(!isDelete, ErrorCode.OPERATION_ERROR);
+    boolean isDelete = questionService.removeQuestionById(id);
+  
     return ResultUtils.success(isDelete);
   }
   
@@ -132,6 +132,7 @@ public class QuestionController {
     if (questionUpdateRequest == null || questionUpdateRequest.getId() <= 0) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
+  
     Question question = new Question();
     BeanUtils.copyProperties(questionUpdateRequest, question);
     // check if the question exists
@@ -142,7 +143,8 @@ public class QuestionController {
       throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
     }
     ThrowUtils.throwIf(oldQuestion == null, ErrorCode.NOT_FOUND_ERROR);
-    Boolean isUpdate = questionService.updateById(question);
+    Boolean isUpdate = questionService.updateQuestion(question);
+  
     return ResultUtils.success(isUpdate);
   }
   
@@ -183,7 +185,9 @@ public class QuestionController {
     if (id <= 0) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
-    Question question = questionService.getById(id);
+  
+    Question question = questionService.getQuestionById(id);
+  
     if (!question.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)) {
       throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
     }

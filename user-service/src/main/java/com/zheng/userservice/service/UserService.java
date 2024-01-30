@@ -1,5 +1,6 @@
 package com.zheng.userservice.service;
 
+import com.alibaba.nacos.api.naming.pojo.healthcheck.impl.Http;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zheng.blogcommon.common.BaseResponse;
 import com.zheng.blogcommon.model.dto.user.UserQueryRequest;
@@ -103,6 +104,14 @@ public interface UserService extends IService<User> {
   QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
   
   /**
+   * remove user by id.
+   *
+   * @param id
+   * @return
+   */
+  boolean removeUserById(Long id);
+  
+  /**
    * user take attendance.
    *
    * @return
@@ -116,4 +125,5 @@ public interface UserService extends IService<User> {
    * @return
    */
   Integer attendanceCount(HttpServletRequest httpServletRequest);
+  
 }

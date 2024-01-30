@@ -11,13 +11,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
-* @author 张峥
-* @description 针对表【question(question)】的数据库操作Service
-* @createDate 2023-12-31 01:11:31
-*/
+ * @author 张峥
+ * @description 针对表【question(question)】的数据库操作Service
+ * @createDate 2023-12-31 01:11:31
+ */
 public interface QuestionService extends IService<Question> {
   
   QueryWrapper<Question> getQueryWrapper(QuestionQueryRequest questionQueryRequest);
   
   Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest httpServletRequest);
+  
+  Question getQuestionById(long id);
+  
+  Boolean updateQuestion(Question question);
+  
+  boolean removeQuestionById(long id);
 }
