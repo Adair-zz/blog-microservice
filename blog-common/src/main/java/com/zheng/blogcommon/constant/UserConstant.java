@@ -26,9 +26,4 @@ public interface UserConstant {
    * account banned
    */
   String BAN_ROLE = "ban";
-  
-  /**
-   * user attendance redis key
-   */
-  String USER_ATTENDANCE_KEY = "attendance:";
 }

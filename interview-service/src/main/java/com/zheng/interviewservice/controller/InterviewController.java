@@ -79,12 +79,13 @@ public class InterviewController {
   public BaseResponse<List<InterviewQuestionVO>> getInterviewQuestionsByQuery(
       @RequestBody InterviewQuestionQueryRequest interviewQuestionQueryRequest, HttpServletRequest httpServletRequest) {
     User loginUser = userFeignClient.getLoginUser(httpServletRequest);
+    long userId = loginUser.getId();
     
     if (interviewQuestionQueryRequest == null) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
-    
-    List<InterviewQuestionVO> interviewQuestionsByTopic = interviewQuestionService.getByQueryRequest(interviewQuestionQueryRequest, loginUser.getId());
+  
+    List<InterviewQuestionVO> interviewQuestionsByTopic = interviewQuestionService.getByQueryRequest(interviewQuestionQueryRequest, userId);
     if (interviewQuestionsByTopic == null || interviewQuestionsByTopic.size() <= 0) {
       throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
     }
@@ -140,5 +141,4 @@ public class InterviewController {
     ThrowUtils.throwIf(!isDelete, ErrorCode.OPERATION_ERROR);
     return ResultUtils.success(isDelete);
   }
-  
 }

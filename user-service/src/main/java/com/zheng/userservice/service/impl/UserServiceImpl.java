@@ -2,9 +2,11 @@ package com.zheng.userservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.zheng.blogcommon.common.BaseResponse;
 import com.zheng.blogcommon.common.ErrorCode;
 import com.zheng.blogcommon.constant.CommonConstant;
+import com.zheng.blogcommon.constant.RedisConstant;
 import com.zheng.blogcommon.constant.UserConstant;
 import com.zheng.blogcommon.exception.BusinessException;
 import com.zheng.blogcommon.model.dto.user.UserQueryRequest;
@@ -19,6 +21,8 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,7 +41,7 @@ import java.util.stream.Collectors;
  * User service implements.
  *
 * @author Zheng Zhang
-* @description 针对表【user(user)】的数据库操作Service实现
+ * @description 针对表【user(user)】的数据库操作Service实现
  * @createDate 2023-04-22 17:21:28
  */
 @Slf4j
@@ -46,10 +50,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
   
   @Resource
-  private UserMapper userMapper;
+  private RedisTemplate redisTemplate;
   
   @Resource
-  private RedisTemplate redisTemplate;
+  private RedissonClient redissonClient;
+  
+  @Resource
+  private Cache<Long, User> userCache;
   
   /**
    * Salt Encryption
@@ -70,10 +77,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     if (!userPassword.equals(confirmPassword)) {
       throw new BusinessException(ErrorCode.PARAMS_ERROR, "Confirm password is wrong");
     }
-    // do not allow special letters in user account
-    // todo
-    synchronized (userAccount.intern()) {
-      // do not allow duplicate account
+    
+    RLock lock = redissonClient.getLock(RedisConstant.USER_REGISTRATION + userAccount);
+    boolean isLock = lock.tryLock();
+    if (!isLock) {
+      throw new BusinessException(ErrorCode.OPERATION_ERROR);
+    }
+    try {
       // not allow duplicate user account
       QueryWrapper<User> queryWrapper = new QueryWrapper<>();
       queryWrapper.eq("userAccount", userAccount);
@@ -93,6 +103,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Register failed, database error");
       }
       return newUser.getId();
+    } finally {
+      lock.unlock();
     }
   }
   
@@ -133,9 +145,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     if (currentLoginUser == null || currentLoginUser.getId() == null) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
-    // get user info from database if user exists
+  
     long userId = currentLoginUser.getId();
-    currentLoginUser = this.getById(userId);
+    // get user info from local cache first, then check database if user exists
+    currentLoginUser = userCache.get(userId, key -> this.getById(userId));
     if (currentLoginUser == null) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -220,7 +233,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     LocalDateTime localDateTime = LocalDateTime.now();
     int dayOfMonth = localDateTime.getDayOfMonth();
     String keySuffix = localDateTime.format(DateTimeFormatter.ofPattern(":yyyyMM"));
-    String key = UserConstant.USER_ATTENDANCE_KEY + userId + keySuffix;
+    String key = RedisConstant.USER_ATTENDANCE_KEY + userId + keySuffix;
     
     redisTemplate.opsForValue().setBit(key, dayOfMonth - 1, true);
     return true;
@@ -234,7 +247,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     LocalDateTime localDateTime = LocalDateTime.now();
     int dayOfMonth = localDateTime.getDayOfMonth();
     String keySuffix = localDateTime.format(DateTimeFormatter.ofPattern(":yyyyMM"));
-    String key = UserConstant.USER_ATTENDANCE_KEY + userId + keySuffix;
+    String key = RedisConstant.USER_ATTENDANCE_KEY + userId + keySuffix;
     
     List<Long> result = redisTemplate.opsForValue().bitField(
         key,
@@ -262,7 +275,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
     return attendanceNumber;
   }
-  
 }
 
 

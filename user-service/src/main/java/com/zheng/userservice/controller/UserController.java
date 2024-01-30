@@ -281,6 +281,5 @@ public class UserController {
   public BaseResponse<Integer> attendanceCount(HttpServletRequest httpServletRequest) {
     Integer attendanceNumber = userService.attendanceCount(httpServletRequest);
     return ResultUtils.success(attendanceNumber);
-    
   }
 }
