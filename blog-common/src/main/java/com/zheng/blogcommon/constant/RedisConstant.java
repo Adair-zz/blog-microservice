@@ -15,4 +15,7 @@ public interface RedisConstant {
   String COUPON_ORDER = "order:";
   String COUPON_STOCK = "coupon:stock:";
   
+  Long REDIS_NULL_EXPIRE = 2L;
+  Long REDIS_KEY_EXPIRE = 30L;
+  
 }

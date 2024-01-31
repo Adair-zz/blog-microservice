@@ -7,6 +7,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.zheng.blogcommon.common.ErrorCode;
 import com.zheng.blogcommon.constant.CommonConstant;
 import com.zheng.blogcommon.constant.RedisConstant;
+import com.zheng.blogcommon.exception.BusinessException;
 import com.zheng.blogcommon.exception.ThrowUtils;
 import com.zheng.blogcommon.model.dto.question.QuestionQueryRequest;
 import com.zheng.blogcommon.model.entity.Question;
@@ -97,9 +98,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       Question questionFromDb = this.getById(key);
       return questionFromDb;
     });
+    if (question == null) {
+      redisTemplate.opsForValue().set(RedisConstant.QUESTION_ID + id, "", RedisConstant.REDIS_NULL_EXPIRE, TimeUnit.MINUTES);
+      throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+    }
     // todo update redis data using MQ
-    redisTemplate.opsForValue().set(RedisConstant.QUESTION_ID + id, question, 30L, TimeUnit.MINUTES);
-    
+    redisTemplate.opsForValue().set(RedisConstant.QUESTION_ID + id, question, RedisConstant.REDIS_KEY_EXPIRE, TimeUnit.MINUTES);
+  
     return question;
   }
   
